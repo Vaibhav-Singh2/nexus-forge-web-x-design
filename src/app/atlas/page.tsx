@@ -21,8 +21,10 @@ export default async function AtlasPage() {
   let activeSession = null;
   let completedSessions: Array<{
     id: string;
+    journeyId: string;
     score: number;
     totalPoints: number;
+    status: string;
     journey: { id: string; prerequisiteId: string | null };
   }> = [];
 
@@ -75,7 +77,7 @@ export default async function AtlasPage() {
           100
         : 0;
 
-    return scorePercent >= journey.minScoreToUnlock;
+    return scorePercent >= (journey.minScoreToUnlock ?? 0);
   };
 
   return (
