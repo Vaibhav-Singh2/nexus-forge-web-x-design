@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, CheckCircle2, Circle } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Circle,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { submitAnswer } from "@/app/actions/journey";
 import { Question } from "@prisma/client";
@@ -23,6 +29,10 @@ export default function QuestionClient({
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    isCorrect: boolean;
+    correctOption: string | null;
+  } | null>(null);
 
   // Parse options if they are stringified JSON
   type Option = { id: string; text: string };
@@ -44,32 +54,35 @@ export default function QuestionClient({
   }
 
   const handleOptionSelect = (key: string) => {
-    if (isSubmitting) return;
+    if (isSubmitting || feedback) return;
     setSelectedOption(key);
   };
 
   const handleSubmit = async () => {
-    if (!selectedOption || isSubmitting) return;
+    if (!selectedOption || isSubmitting || feedback) return;
 
     setIsSubmitting(true);
 
     try {
-      await submitAnswer(sessionId, question.id, selectedOption);
+      const result = await submitAnswer(sessionId, question.id, selectedOption);
 
-      // Navigation Logic
-      // If step 10, go to Overlook
-      // If last step, go to Summit? No, usually summit is after last question.
-      // Let's mirror the mock logic:
-      // Mock: if (q.id === "10") -> /exam/overlook
-      // Mock: if (nextId > 15) -> /exam/summit
+      // Show feedback
+      setFeedback({
+        isCorrect: result.isCorrect,
+        correctOption: result.correctOption,
+      });
 
-      if (currentStep === 10) {
-        router.push("/exam/overlook");
-      } else if (currentStep >= totalQuestions) {
-        router.push("/summit");
-      } else {
-        router.push(`/exam/${currentStep + 1}`);
-      }
+      // Wait 2 seconds before navigating
+      setTimeout(() => {
+        // Navigation Logic
+        if (currentStep === 10) {
+          router.push("/exam/overlook");
+        } else if (currentStep >= totalQuestions) {
+          router.push("/summit");
+        } else {
+          router.push(`/exam/${currentStep + 1}`);
+        }
+      }, 2000);
     } catch (e) {
       console.error("Submission failed", e);
       setIsSubmitting(false); // Enable retry
@@ -101,43 +114,78 @@ export default function QuestionClient({
             {question.text}
           </h1>
 
-          {/* Options Grid */}
-          <div className="grid grid-cols-1 gap-3">
-            {options.map((option, idx) => {
-              const key = option.id;
-              const value = option.text;
-              const isSelected = selectedOption === key;
+          {/* Options */}
+          <div className="space-y-3">
+            {options.map((opt) => {
+              const isSelected = selectedOption === opt.id;
+              const is Correct = feedback && opt.id === feedback.correctOption;
+              const isIncorrect = feedback && isSelected && !feedback.isCorrect;
 
               return (
                 <button
-                  key={key}
-                  onClick={() => handleOptionSelect(key)}
-                  disabled={isSubmitting}
+                  key={opt.id}
+                  onClick={() => handleOptionSelect(opt.id)}
+                  disabled={isSubmitting || !!feedback}
                   className={cn(
-                    "group relative w-full p-4 text-left rounded-xl border transition-all duration-300 flex items-start gap-4",
-                    isSelected
-                      ? "bg-deep-shale text-paper-mist border-deep-shale shadow-lg scale-[1.01]"
-                      : "bg-white border-stone-gray/20 hover:border-horizon-blue hover:shadow-md text-deep-shale",
-                    isSubmitting &&
-                      !isSelected &&
-                      "opacity-50 cursor-not-allowed",
+                    "w-full p-4 rounded-lg border-2 transition-all duration-200 text-left flex items-center gap-3",
+                    isCorrect
+                      ? "border-green-500 bg-green-50 text-green-900"
+                      : isIncorrect
+                        ? "border-red-500 bg-red-50 text-red-900"
+                        : isSelected
+                          ? "border-horizon-blue bg-horizon-blue/5 text-deep-shale"
+                          : "border-stone-gray/20 hover:border-horizon-blue/50 text-deep-shale/80",
+                    (isSubmitting || feedback) && "cursor-not-allowed",
                   )}
-                  style={{ animationDelay: `${200 + idx * 50}ms` }}
                 >
-                  <div className="mt-1 shrink-0">
-                    {isSelected ? (
-                      <CheckCircle2 className="w-5 h-5 text-paper-mist" />
-                    ) : (
-                      <Circle className="w-5 h-5 text-stone-gray/40 group-hover:text-horizon-blue transition-colors" />
-                    )}
-                  </div>
-                  <div className="leading-relaxed font-light text-base">
-                    {value}
-                  </div>
+                  {isCorrect ? (
+                    <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
+                  ) : isIncorrect ? (
+                    <Circle className="w-5 h-5 text-red-600 shrink-0" />
+                  ) : isSelected ? (
+                    <CheckCircle2 className="w-5 h-5 text-horizon-blue shrink-0" />
+                  ) : (
+                    <Circle className="w-5 h-5 text-stone-gray shrink-0" />
+                  )}
+                  <span className="flex-1 font-medium">{opt.text}</span>
                 </button>
               );
             })}
           </div>
+
+          {/* Feedback Message */}
+          {feedback && (
+            <div
+              className={cn(
+                "p-4 rounded-lg border-2 flex items-start gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300",
+                feedback.isCorrect
+                  ? "bg-green-50 border-green-200 text-green-900"
+                  : "bg-red-50 border-red-200 text-red-900"
+              )}
+            >
+              {feedback.isCorrect ? (
+                <>
+                  <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-semibold">Correct!</p>
+                    <p className="text-sm mt-1 text-green-800">
+                      Well done. Moving to next question...
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Circle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-semibold">Incorrect</p>
+                    <p className="text-sm mt-1 text-red-800">
+                      The correct answer was option {feedback.correctOption?.toUpperCase()}. Moving to next question...
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
 
           {/* Inline Action Button */}
           <div className="flex justify-end pt-4">

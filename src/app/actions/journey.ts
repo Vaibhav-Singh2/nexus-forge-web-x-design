@@ -135,6 +135,13 @@ export async function submitAnswer(
   }
 
   revalidatePath(`/exam/${nextStep}`);
+
+  // Return feedback data for client
+  return {
+    isCorrect,
+    correctOption: question?.correctOption || null,
+    explanation: question?.explanation || null,
+  };
 }
 
 export async function reachOverlook(sessionId: string) {
