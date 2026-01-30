@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  ArrowRight,
-  CheckCircle2,
-  Circle,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { submitAnswer } from "@/app/actions/journey";
 import { Question } from "@prisma/client";
@@ -118,7 +112,7 @@ export default function QuestionClient({
           <div className="space-y-3">
             {options.map((opt) => {
               const isSelected = selectedOption === opt.id;
-              const is Correct = feedback && opt.id === feedback.correctOption;
+              const isCorrect = feedback && opt.id === feedback.correctOption;
               const isIncorrect = feedback && isSelected && !feedback.isCorrect;
 
               return (
@@ -160,7 +154,7 @@ export default function QuestionClient({
                 "p-4 rounded-lg border-2 flex items-start gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300",
                 feedback.isCorrect
                   ? "bg-green-50 border-green-200 text-green-900"
-                  : "bg-red-50 border-red-200 text-red-900"
+                  : "bg-red-50 border-red-200 text-red-900",
               )}
             >
               {feedback.isCorrect ? (
@@ -179,7 +173,9 @@ export default function QuestionClient({
                   <div>
                     <p className="font-semibold">Incorrect</p>
                     <p className="text-sm mt-1 text-red-800">
-                      The correct answer was option {feedback.correctOption?.toUpperCase()}. Moving to next question...
+                      The correct answer was option{" "}
+                      {feedback.correctOption?.toUpperCase()}. Moving to next
+                      question...
                     </p>
                   </div>
                 </>

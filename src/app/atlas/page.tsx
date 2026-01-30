@@ -19,7 +19,12 @@ export default async function AtlasPage() {
 
   // Fetch active session if user is logged in
   let activeSession = null;
-  let completedSessions: any[] = [];
+  let completedSessions: Array<{
+    id: string;
+    score: number;
+    totalPoints: number;
+    journey: { id: string; prerequisiteId: string | null };
+  }> = [];
 
   if (session?.user?.email) {
     const user = await db.user.findUnique({
@@ -48,7 +53,11 @@ export default async function AtlasPage() {
   }
 
   // Helper function to check if journey is unlocked
-  const isJourneyUnlocked = (journey: any) => {
+  const isJourneyUnlocked = (journey: {
+    id: string;
+    prerequisiteId: string | null;
+    minScoreToUnlock: number | null;
+  }) => {
     // No prerequisite = always unlocked
     if (!journey.prerequisiteId) return true;
 
