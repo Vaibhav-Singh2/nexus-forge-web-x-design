@@ -1,0 +1,67 @@
+[
+  {
+    "id": "1",
+    "name": "Alex Rover",
+    "progress": 85,
+    "velocity": "high",
+    "status": "active",
+    "exam": "The Foundations of Logic",
+    "startTime": "10:00 AM",
+    "timeElapsed": "32m",
+    "currentStage": "The Path",
+    "currentQuestion": 12,
+    "totalQuestions": 15
+  },
+  {
+    "id": "2",
+    "name": "Sarah Climber",
+    "progress": 62,
+    "velocity": "steady",
+    "status": "active",
+    "exam": "The Foundations of Logic",
+    "startTime": "10:15 AM",
+    "timeElapsed": "17m",
+    "currentStage": "The Path",
+    "currentQuestion": 8,
+    "totalQuestions": 15
+  },
+  {
+    "id": "3",
+    "name": "Mike Base",
+    "progress": 15,
+    "velocity": "stalled",
+    "status": "distress",
+    "exam": "The Foundations of Logic",
+    "startTime": "09:45 AM",
+    "timeElapsed": "47m",
+    "currentStage": "The Trailhead",
+    "currentQuestion": 0,
+    "totalQuestions": 15
+  },
+  {
+    "id": "4",
+    "name": "Jenny Swift",
+    "progress": 95,
+    "velocity": "high",
+    "status": "active",
+    "exam": "Abstract Patterns",
+    "startTime": "11:00 AM",
+    "timeElapsed": "20m",
+    "currentStage": "The Summit",
+    "currentQuestion": 15,
+    "totalQuestions": 15
+  },
+  {
+    "id": "5",
+    "name": "Tom Hault",
+    "progress": 45,
+    "velocity": "stalled",
+    "status": "idle",
+    "exam": "The Foundations of Logic",
+    "startTime": "10:30 AM",
+    "timeElapsed": "15m",
+    "currentStage": "The Overlook",
+    "currentQuestion": 5,
+    "totalQuestions": 15
+  }
+]

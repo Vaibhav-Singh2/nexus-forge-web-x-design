@@ -1,0 +1,45 @@
+services:
+  # MongoDB Database
+  mongo:
+    image: mongo:latest
+    container_name: drishti-mongo
+    ports:
+      - "0.0.0.0:27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=drishti
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=drishti123
+    restart: always
+    networks:
+      - drishti-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:alpine
+    container_name: drishti-redis
+    command: redis-server --requirepass drishti123
+    ports:
+      - "0.0.0.0:6379:6379"
+    restart: always
+    networks:
+      - drishti-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "drishti123", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  drishti-network:
+    driver: bridge

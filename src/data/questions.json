@@ -1,0 +1,167 @@
+[
+  {
+    "id": "1",
+    "journeyId": "1",
+    "question": "Which pattern best describes the relationship between the observer and the observed?",
+    "options": [
+      { "id": "a", "text": "They are distinct and separate entities." },
+      { "id": "b", "text": "They mutually influence one another." },
+      { "id": "c", "text": "The observer creates the observed." },
+      { "id": "d", "text": "The observed exists independently." }
+    ]
+  },
+  {
+    "id": "2",
+    "journeyId": "1",
+    "question": "Identify the logical fallacy: 'The ascent is steep, therefore it must be the wrong path.'",
+    "options": [
+      { "id": "a", "text": "Ad Hominem" },
+      { "id": "b", "text": "Non Sequitur" },
+      { "id": "c", "text": "Appeal to Nature" },
+      { "id": "d", "text": "False Equivalence" }
+    ]
+  },
+  {
+    "id": "3",
+    "journeyId": "1",
+    "question": "If all mountains are high, and some high places are dangerous, which conclusion follows?",
+    "options": [
+      { "id": "a", "text": "All mountains are dangerous." },
+      { "id": "b", "text": "Some mountains might be dangerous." },
+      { "id": "c", "text": "No mountains are dangerous." },
+      { "id": "d", "text": "All dangerous places are mountains." }
+    ]
+  },
+  {
+    "id": "4",
+    "journeyId": "1",
+    "question": "Select the term that best completes the analogy: Compass is to Direction as Logic is to...",
+    "options": [
+      { "id": "a", "text": "Emotion" },
+      { "id": "b", "text": "Truth" },
+      { "id": "c", "text": "Reasoning" },
+      { "id": "d", "text": "Argument" }
+    ]
+  },
+  {
+    "id": "5",
+    "journeyId": "1",
+    "question": "In the context of a journey, what does a 'waypoint' represent?",
+    "options": [
+      { "id": "a", "text": "The final destination" },
+      { "id": "b", "text": "A confirmed intermediate position" },
+      { "id": "c", "text": "A missed opportunity" },
+      { "id": "d", "text": "The starting line" }
+    ]
+  },
+  {
+    "id": "6",
+    "journeyId": "1",
+    "question": "Which cognitive bias tends to make us favor information that confirms our pre-existing beliefs?",
+    "options": [
+      { "id": "a", "text": "Confirmation Bias" },
+      { "id": "b", "text": "Recency Bias" },
+      { "id": "c", "text": "Sunk Cost Fallacy" },
+      { "id": "d", "text": "Dunning-Kruger Effect" }
+    ]
+  },
+  {
+    "id": "7",
+    "journeyId": "1",
+    "question": "Analyze the sequence: 2, 6, 12, 20, 30. What comes next?",
+    "options": [
+      { "id": "a", "text": "36" },
+      { "id": "b", "text": "40" },
+      { "id": "c", "text": "42" },
+      { "id": "d", "text": "48" }
+    ]
+  },
+  {
+    "id": "8",
+    "journeyId": "1",
+    "question": "Which of these is NOT a primary component of a sound argument?",
+    "options": [
+      { "id": "a", "text": "Premise" },
+      { "id": "b", "text": "Conclusion" },
+      { "id": "c", "text": "Volume" },
+      { "id": "d", "text": "Inference" }
+    ]
+  },
+  {
+    "id": "9",
+    "journeyId": "1",
+    "question": "What is the primary purpose of Occam's Razor?",
+    "options": [
+      { "id": "a", "text": "To cut through physical obstacles" },
+      { "id": "b", "text": "To select the simplest explanation" },
+      { "id": "c", "text": "To multiply entities unnecessarily" },
+      { "id": "d", "text": "To shave intricate patterns" }
+    ]
+  },
+  {
+    "id": "10",
+    "journeyId": "1",
+    "question": "You have reached the first major milestone. What is the most logical next step?",
+    "options": [
+      { "id": "a", "text": "Turn back immediately" },
+      { "id": "b", "text": "Assess connection and proceed" },
+      { "id": "c", "text": "Assume the path is finished" },
+      { "id": "d", "text": "Panic" }
+    ]
+  },
+  {
+    "id": "11",
+    "journeyId": "1",
+    "question": "Abstractly, if A implies B, and B is false, what can be said of A?",
+    "options": [
+      { "id": "a", "text": "A is true" },
+      { "id": "b", "text": "A is false" },
+      { "id": "c", "text": "A is unrelated" },
+      { "id": "d", "text": "A is ambitious" }
+    ]
+  },
+  {
+    "id": "12",
+    "journeyId": "1",
+    "question": "Which element is crucial for navigating unknown theoretical terrain?",
+    "options": [
+      { "id": "a", "text": "Rigid dogma" },
+      { "id": "b", "text": "First principles thinking" },
+      { "id": "c", "text": "Memorization" },
+      { "id": "d", "text": "Speed" }
+    ]
+  },
+  {
+    "id": "13",
+    "journeyId": "1",
+    "question": "The 'Straw Man' fallacy involves:",
+    "options": [
+      { "id": "a", "text": "Building a scarecrow" },
+      { "id": "b", "text": "Misrepresenting an argument to attack it" },
+      { "id": "c", "text": "Using ad hominem attacks" },
+      { "id": "d", "text": "Circular reasoning" }
+    ]
+  },
+  {
+    "id": "14",
+    "journeyId": "1",
+    "question": "In a deductive argument, if the premises are true, the conclusion must be:",
+    "options": [
+      { "id": "a", "text": "Probable" },
+      { "id": "b", "text": "Possible" },
+      { "id": "c", "text": "Certain" },
+      { "id": "d", "text": "Debatable" }
+    ]
+  },
+  {
+    "id": "15",
+    "journeyId": "1",
+    "question": "Final Check: Logic suggests that to reach the summit, one must:",
+    "options": [
+      { "id": "a", "text": "Teleport" },
+      { "id": "b", "text": "Complete the ascent" },
+      { "id": "c", "text": "Stay at base camp" },
+      { "id": "d", "text": "Ignore the path" }
+    ]
+  }
+]

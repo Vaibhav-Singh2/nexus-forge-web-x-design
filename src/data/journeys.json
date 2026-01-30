@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "title": "The Foundations of Logic",
+    "description": "Navigate the core principles of reasoning. A steady ascent suitable for all.",
+    "difficulty": "Moderate",
+    "duration": "45 Mins",
+    "status": "available",
+    "type": "Core Ascent",
+    "totalQuestions": 15,
+    "stats": [
+      { "label": "Est. Duration", "value": "20 Mins" },
+      { "label": "Waypoints", "value": "15 Questions" },
+      { "label": "Terrain", "value": "Mixed" }
+    ],
+    "gearChecks": [
+      { "label": "Connection Signal: Strong", "status": "ready" },
+      { "label": "Environment: Quiet Space", "status": "recommended" },
+      { "label": "Progress: Auto-saved", "status": "ready" }
+    ]
+  },
+  {
+    "id": "2",
+    "title": "Abstract Patterns",
+    "description": "Identify hidden structures in a landscape of shapes and forms.",
+    "difficulty": "Advanced",
+    "duration": "60 Mins",
+    "status": "available",
+    "type": "Technical Route",
+    "totalQuestions": 20,
+    "stats": [
+      { "label": "Est. Duration", "value": "60 Mins" },
+      { "label": "Waypoints", "value": "20 Questions" },
+      { "label": "Terrain", "value": "Steep" }
+    ],
+    "gearChecks": []
+  },
+  {
+    "id": "3",
+    "title": "Verbal Mastery",
+    "description": "The peak of linguistic precision. High altitude, thin air.",
+    "difficulty": "Expert",
+    "duration": "90 Mins",
+    "status": "locked",
+    "type": "Summit Push",
+    "totalQuestions": 25,
+    "stats": [],
+    "gearChecks": []
+  }
+]
