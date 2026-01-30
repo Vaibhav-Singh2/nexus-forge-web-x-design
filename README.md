@@ -44,7 +44,7 @@
 
 ### For Students
 
-- 🎮 **Gamified Interface**: Journey-themed UI with expeditions, trails, and summits
+- 🎮 **Journey-Themed Experience**: Expedition-inspired UI with trails, waypoints, and summit completion
 - ⏱️ **Question Timer**: 60-second countdown with visual urgency indicators
 - ✅ **Instant Feedback**: Immediate right/wrong indicators with explanations
 - 📊 **Performance Metrics**: Score tracking, percentage calculation, and performance tiers
