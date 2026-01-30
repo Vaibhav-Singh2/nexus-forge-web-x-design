@@ -1,12 +1,38 @@
-"use client";
-
 import Link from "next/link";
-import { Map, Mountain, Clock, Lock, ArrowRight, Compass } from "lucide-react";
+import {
+  Map,
+  Mountain,
+  Clock,
+  Lock,
+  ArrowRight,
+  Compass,
+  PlayCircle,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getJourneys } from "@/lib/data";
+import { auth } from "@/auth";
+import { db } from "@/lib/db";
 
-import JOURNEYS from "@/data/journeys.json";
+export default async function AtlasPage() {
+  const journeys = await getJourneys();
+  const session = await auth();
 
-export default function AtlasPage() {
+  // Fetch active session if user is logged in
+  let activeSession = null;
+  if (session?.user?.email) {
+    const user = await db.user.findUnique({
+      where: { email: session.user.email },
+    });
+    if (user) {
+      activeSession = await db.examSession.findFirst({
+        where: {
+          userId: user.id,
+          status: { in: ["IN_PROGRESS", "DISTRESS"] },
+        },
+      });
+    }
+  }
+
   return (
     <main className="min-h-screen bg-paper-mist p-6 md:p-12 animate-hero-reveal">
       {/* 1. Header: Orientation */}
@@ -35,25 +61,45 @@ export default function AtlasPage() {
 
       {/* 2. Journey Grid */}
       <section className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-        {JOURNEYS.map((journey) => {
-          const isLocked = journey.status === "locked";
+        {journeys.map((journey) => {
+          // TODO: Implement unlocking logic based on user progress
+          const isLocked = false;
+          const type = "Expedition"; // Default type
+
+          const isActive = activeSession?.journeyId === journey.id;
+
+          // Determine Link Href
+          let href = `/trail/${journey.id}`;
+          if (isLocked) href = "#";
+          if (isActive && activeSession) {
+            // If active, go to current step (or overlook/summit logic)
+            // Simplified: Go to current step
+            // Needs logic: if session.currentStep > total -> Summit?
+            // But for now, direct to current step is safe. QuestionPage handles redirects.
+            href = `/exam/${activeSession.currentStep}`;
+          }
 
           return (
             <Link
               key={journey.id}
-              href={isLocked ? "#" : `/trail/${journey.id}`}
+              href={href}
               className={cn(
                 "group relative p-8 rounded-2xl border transition-all duration-300 flex flex-col justify-between min-h-70",
-                isLocked
-                  ? "bg-stone-gray/5 border-stone-gray/20 cursor-not-allowed opacity-70"
-                  : "bg-white border-stone-gray/20 hover:border-horizon-blue hover:shadow-lg hover:-translate-y-1",
+                isActive
+                  ? "bg-white border-horizon-blue shadow-lg ring-1 ring-horizon-blue/20"
+                  : isLocked
+                    ? "bg-stone-gray/5 border-stone-gray/20 cursor-not-allowed opacity-70"
+                    : "bg-white border-stone-gray/20 hover:border-horizon-blue hover:shadow-lg hover:-translate-y-1",
               )}
               aria-disabled={isLocked}
             >
               {/* Background Decor */}
               <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                 <Mountain
-                  className="w-24 h-24 text-deep-shale"
+                  className={cn(
+                    "w-24 h-24",
+                    isActive ? "text-horizon-blue" : "text-deep-shale",
+                  )}
                   strokeWidth={0.5}
                 />
               </div>
@@ -64,12 +110,14 @@ export default function AtlasPage() {
                   <span
                     className={cn(
                       "text-xs font-semibold tracking-wider uppercase px-2 py-1 rounded",
-                      isLocked
-                        ? "bg-stone-gray/20 text-deep-shale/50"
-                        : "bg-horizon-blue/10 text-horizon-blue",
+                      isActive
+                        ? "bg-horizon-blue text-white shadow-sm"
+                        : isLocked
+                          ? "bg-stone-gray/20 text-deep-shale/50"
+                          : "bg-horizon-blue/10 text-horizon-blue",
                     )}
                   >
-                    {journey.type}
+                    {isActive ? "In Progress" : type}
                   </span>
                   {isLocked && <Lock className="w-4 h-4 text-deep-shale/40" />}
                 </div>
@@ -96,9 +144,20 @@ export default function AtlasPage() {
                 </div>
 
                 {!isLocked ? (
-                  <div className="flex items-center gap-2 text-horizon-blue font-medium text-sm group-hover:translate-x-1 transition-transform">
-                    <span>View Trail</span>
-                    <ArrowRight className="w-4 h-4" />
+                  <div
+                    className={cn(
+                      "flex items-center gap-2 font-medium text-sm group-hover:translate-x-1 transition-transform",
+                      isActive
+                        ? "text-horizon-blue"
+                        : "text-deep-shale/60 group-hover:text-horizon-blue",
+                    )}
+                  >
+                    <span>{isActive ? "Resume Expedition" : "View Trail"}</span>
+                    {isActive ? (
+                      <PlayCircle className="w-4 h-4" />
+                    ) : (
+                      <ArrowRight className="w-4 h-4" />
+                    )}
                   </div>
                 ) : (
                   <span className="text-sm text-deep-shale/40 italic">

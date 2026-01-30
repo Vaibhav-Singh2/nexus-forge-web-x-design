@@ -8,8 +8,9 @@ export interface CandidateStatus {
   id: string;
   name: string;
   progress: number; // 0-100
-  velocity: "high" | "steady" | "stalled";
-  status: "active" | "distress" | "idle";
+  velocity: "slow" | "steady" | "fast";
+  status: "idle" | "active" | "distress" | "complete";
+  lastActive?: string;
 }
 
 interface MomentumOrbProps {
@@ -24,7 +25,7 @@ export function MomentumOrb({ candidate, onClick }: MomentumOrbProps) {
 
   // Tail length based on velocity
   const tailWidth =
-    candidate.velocity === "high"
+    candidate.velocity === "fast"
       ? "w-16"
       : candidate.velocity === "steady"
         ? "w-8"

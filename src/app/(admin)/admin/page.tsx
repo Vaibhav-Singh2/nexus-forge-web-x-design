@@ -1,12 +1,36 @@
-"use client";
-
 import React from "react";
 import { ExpeditionMap } from "@/components/admin/ExpeditionMap";
 import { Activity, Users, AlertTriangle } from "lucide-react";
-import CANDIDATES from "@/data/candidates.json";
+import { db } from "@/lib/db";
 import { CandidateStatus } from "@/components/admin/MomentumOrb";
 
-export default function AdminPage() {
+// Revalidate every 0 seconds? Or standard revalidation?
+// Since we use Pusher for updates, initial load can be static or cached for short time.
+export const dynamic = "force-dynamic";
+
+export default async function AdminPage() {
+  const sessions = await db.examSession.findMany({
+    where: { status: { in: ["IN_PROGRESS", "DISTRESS", "COMPLETED"] } },
+    include: { user: true, journey: true },
+    orderBy: { startTime: "desc" },
+  });
+
+  const candidates: CandidateStatus[] = sessions.map((s) => ({
+    id: s.id,
+    name: s.user.name || "Traveler",
+    progress: Math.round(
+      (s.currentStep / (s.journey.totalQuestions || 30)) * 100,
+    ),
+    status:
+      s.status === "DISTRESS"
+        ? "distress"
+        : s.status === "COMPLETED"
+          ? "complete"
+          : "active",
+    velocity: "steady", // derive from logs if needed
+    lastActive: s.startTime.toISOString(), // approx
+  }));
+
   return (
     <div className="bg-paper-mist min-h-screen text-deep-shale overflow-hidden animate-hero-reveal">
       {/* 1. Command Center Header */}
@@ -19,7 +43,7 @@ export default function AdminPage() {
         </div>
 
         <div className="flex items-center gap-6 text-sm text-deep-shale/60">
-          <span>Active Journeys: {CANDIDATES.length}</span>
+          <span>Active Journeys: {candidates.length}</span>
           <span>•</span>
           <span>Network: Stable</span>
         </div>
@@ -34,7 +58,7 @@ export default function AdminPage() {
                 Total Travelers
               </span>
               <span className="text-3xl font-medium text-deep-shale">
-                {CANDIDATES.length}
+                {candidates.length}
               </span>
             </div>
             <Users className="w-8 h-8 text-stone-gray/30" />
@@ -53,7 +77,7 @@ export default function AdminPage() {
           </div>
 
           <div className="bg-white p-6 rounded-2xl border border-stone-gray/20 shadow-sm flex items-center justify-between relative overflow-hidden">
-            {CANDIDATES.some((c) => c.status === "distress") && (
+            {candidates.some((c) => c.status === "distress") && (
               <div className="absolute inset-x-0 bottom-0 h-1 bg-red-500 animate-pulse" />
             )}
             <div>
@@ -61,7 +85,7 @@ export default function AdminPage() {
                 Distress Signals
               </span>
               <span className="text-3xl font-medium text-deep-shale">
-                {CANDIDATES.filter((c) => c.status === "distress").length}
+                {candidates.filter((c) => c.status === "distress").length}
               </span>
             </div>
             <AlertTriangle className="w-8 h-8 text-red-500" />
@@ -70,9 +94,7 @@ export default function AdminPage() {
 
         {/* 3. Central Map Visualization */}
         <div className="flex-1 w-full max-w-6xl mx-auto flex items-center justify-center relative min-h-100">
-          <ExpeditionMap
-            candidates={CANDIDATES as unknown as CandidateStatus[]}
-          />
+          <ExpeditionMap candidates={candidates} />
         </div>
 
         {/* 4. Footer Placeholder */}

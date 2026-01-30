@@ -4,34 +4,39 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Compass, User, Key, Shield, ArrowRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { loginAction } from "@/app/actions/auth";
 
 export default function LoginPage() {
   const router = useRouter();
   const [loadingRole, setLoadingRole] = useState<"student" | "admin" | null>(
     null,
   );
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleLogin = (role: "student" | "admin") => {
+  const handleLogin = async (role: "student" | "admin") => {
     setLoadingRole(role);
+    setErrorMessage(null);
 
-    // Simulate auth delay for "realism"
-    setTimeout(() => {
-      // Mock Auth State
-      if (typeof window !== "undefined") {
-        localStorage.setItem("userRole", role);
-        localStorage.setItem(
-          "userName",
-          role === "student" ? "Alex Rover" : "Admin User",
-        );
-      }
-
-      // Redirect
-      if (role === "student") {
-        router.push("/atlas");
+    try {
+      const result = await loginAction(role);
+      if (
+        result &&
+        typeof result === "object" &&
+        "success" in result &&
+        result.success
+      ) {
+        router.push(result.url || "/");
+      } else if (result && typeof result === "object" && "error" in result) {
+        setErrorMessage((result.error as string) || "Unknown error");
+        setLoadingRole(null);
       } else {
-        router.push("/admin");
+        setLoadingRole(null);
       }
-    }, 800);
+    } catch (error) {
+      console.error("Login failed", error);
+      setErrorMessage("Authentication failed. Please try again.");
+      setLoadingRole(null);
+    }
   };
 
   return (
@@ -48,6 +53,11 @@ export default function LoginPage() {
           <p className="text-sm text-deep-shale/60 leading-relaxed">
             Identify your role to proceed to the secure area.
           </p>
+          {errorMessage && (
+            <div className="text-red-500 text-xs bg-red-50 p-2 rounded">
+              {errorMessage}
+            </div>
+          )}
         </div>
 
         {/* Role Selection */}

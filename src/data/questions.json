@@ -163,5 +163,225 @@
       { "id": "c", "text": "Stay at base camp" },
       { "id": "d", "text": "Ignore the path" }
     ]
+  },
+  {
+    "id": "201",
+    "journeyId": "2",
+    "question": "If a square becomes a cube, what does a triangle become?",
+    "options": [
+      { "id": "a", "text": "A Sphere" },
+      { "id": "b", "text": "A Tetrahedron" },
+      { "id": "c", "text": "A Circle" },
+      { "id": "d", "text": "A Hexagon" }
+    ]
+  },
+  {
+    "id": "202",
+    "journeyId": "2",
+    "question": "Which shape creates a tessellation without gaps?",
+    "options": [
+      { "id": "a", "text": "Pentagon" },
+      { "id": "b", "text": "Hexagon" },
+      { "id": "c", "text": "Octagon" },
+      { "id": "d", "text": "Circle" }
+    ]
+  },
+  {
+    "id": "203",
+    "journeyId": "2",
+    "question": "In a recursive fractal pattern, the whole is:",
+    "options": [
+      { "id": "a", "text": "Unrelated to the parts" },
+      { "id": "b", "text": "Self-similar to the parts" },
+      { "id": "c", "text": "Smaller than the parts" },
+      { "id": "d", "text": "Invisible" }
+    ]
+  },
+  {
+    "id": "204",
+    "journeyId": "2",
+    "question": "Identify the next shape in the sequence: Triangle (3), Square (4), Pentagon (5)...",
+    "options": [
+      { "id": "a", "text": "Heptagon" },
+      { "id": "b", "text": "Hexagon" },
+      { "id": "c", "text": "Octagon" },
+      { "id": "d", "text": "Decagon" }
+    ]
+  },
+  {
+    "id": "205",
+    "journeyId": "2",
+    "question": "Symmetry that reflects across a central axis is called:",
+    "options": [
+      { "id": "a", "text": "Radial Symmetry" },
+      { "id": "b", "text": "Bilateral Symmetry" },
+      { "id": "c", "text": "Fractal Symmetry" },
+      { "id": "d", "text": "Translational Symmetry" }
+    ]
+  },
+  {
+    "id": "206",
+    "journeyId": "2",
+    "question": "In visual perception, 'negative space' refers to:",
+    "options": [
+      { "id": "a", "text": "The dark areas only" },
+      { "id": "b", "text": "The space around and between the subject" },
+      { "id": "c", "text": "A logical fallacy" },
+      { "id": "d", "text": "An error in the image" }
+    ]
+  },
+  {
+    "id": "207",
+    "journeyId": "2",
+    "question": "A Mobius strip is unique because it has:",
+    "options": [
+      { "id": "a", "text": "Two sides and two edges" },
+      { "id": "b", "text": "One side and two edges" },
+      { "id": "c", "text": "One side and one edge" },
+      { "id": "d", "text": "No edges" }
+    ]
+  },
+  {
+    "id": "208",
+    "journeyId": "2",
+    "question": "Which concept describes the golden ratio?",
+    "options": [
+      { "id": "a", "text": "A perfect circle" },
+      { "id": "b", "text": "Approximately 1.618" },
+      { "id": "c", "text": "Pi (3.14)" },
+      { "id": "d", "text": "Pythagoras Theorem" }
+    ]
+  },
+  {
+    "id": "209",
+    "journeyId": "2",
+    "question": "If you rotate a 'p' 180 degrees, it typically looks like a:",
+    "options": [
+      { "id": "a", "text": "b" },
+      { "id": "b", "text": "d" },
+      { "id": "c", "text": "q" },
+      { "id": "d", "text": "p" }
+    ]
+  },
+  {
+    "id": "210",
+    "journeyId": "2",
+    "question": "Abstract patterns rely heavily on:",
+    "options": [
+      { "id": "a", "text": "Realism" },
+      { "id": "b", "text": "Repetition and variation" },
+      { "id": "c", "text": "Random noise" },
+      { "id": "d", "text": "Written words" }
+    ]
+  },
+  {
+    "id": "301",
+    "journeyId": "3",
+    "question": "Select the antonym for 'Ephemeral':",
+    "options": [
+      { "id": "a", "text": "Fleeting" },
+      { "id": "b", "text": "Eternal" },
+      { "id": "c", "text": "Brief" },
+      { "id": "d", "text": "Transient" }
+    ]
+  },
+  {
+    "id": "302",
+    "journeyId": "3",
+    "question": "An 'oxymoron' is a figure of speech that:",
+    "options": [
+      { "id": "a", "text": "Exaggerates a point" },
+      { "id": "b", "text": "Combines contradictory terms" },
+      { "id": "c", "text": "Repeats vowel sounds" },
+      { "id": "d", "text": "Uses like or as" }
+    ]
+  },
+  {
+    "id": "303",
+    "journeyId": "3",
+    "question": "Identify the word that fits: The ____ silence was unnerving.",
+    "options": [
+      { "id": "a", "text": "Deafening" },
+      { "id": "b", "text": "Loud" },
+      { "id": "c", "text": "Orange" },
+      { "id": "d", "text": "Fast" }
+    ]
+  },
+  {
+    "id": "304",
+    "journeyId": "3",
+    "question": "Etymology is the study of:",
+    "options": [
+      { "id": "a", "text": "Insects" },
+      { "id": "b", "text": "Word origins" },
+      { "id": "c", "text": "Maps" },
+      { "id": "d", "text": "Stars" }
+    ]
+  },
+  {
+    "id": "305",
+    "journeyId": "3",
+    "question": "Which of these is a palindrome?",
+    "options": [
+      { "id": "a", "text": "Mountain" },
+      { "id": "b", "text": "Level" },
+      { "id": "c", "text": "Journey" },
+      { "id": "d", "text": "Ascent" }
+    ]
+  },
+  {
+    "id": "306",
+    "journeyId": "3",
+    "question": "A 'verbose' explanation is:",
+    "options": [
+      { "id": "a", "text": "Concise" },
+      { "id": "b", "text": "Wordy" },
+      { "id": "c", "text": "Silent" },
+      { "id": "d", "text": "Visual" }
+    ]
+  },
+  {
+    "id": "307",
+    "journeyId": "3",
+    "question": "Complete the analogy: Book is to Chapter as Journey is to...",
+    "options": [
+      { "id": "a", "text": "Map" },
+      { "id": "b", "text": "Desitnation" },
+      { "id": "c", "text": "Leg of the trip" },
+      { "id": "d", "text": "Vehicle" }
+    ]
+  },
+  {
+    "id": "308",
+    "journeyId": "3",
+    "question": "The term 'Ubiquitous' means:",
+    "options": [
+      { "id": "a", "text": "Rare" },
+      { "id": "b", "text": "Found everywhere" },
+      { "id": "c", "text": "Dangerous" },
+      { "id": "d", "text": "Hidden" }
+    ]
+  },
+  {
+    "id": "309",
+    "journeyId": "3",
+    "question": "Which sentence uses the active voice?",
+    "options": [
+      { "id": "a", "text": "The mountain was climbed by the team." },
+      { "id": "b", "text": "The team climbed the mountain." },
+      { "id": "c", "text": "Mistakes were made." },
+      { "id": "d", "text": "The trail is being followed." }
+    ]
+  },
+  {
+    "id": "310",
+    "journeyId": "3",
+    "question": "A 'didactic' story is intended to:",
+    "options": [
+      { "id": "a", "text": "Entertain only" },
+      { "id": "b", "text": "Teach a lesson" },
+      { "id": "c", "text": "Confuse the reader" },
+      { "id": "d", "text": "Scare the reader" }
+    ]
   }
 ]

@@ -1,15 +1,79 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MomentumOrb, CandidateStatus } from "./MomentumOrb";
 import { Radio, Search } from "lucide-react";
+import { pusherClient } from "@/lib/pusher";
 
 interface ExpeditionMapProps {
   candidates: CandidateStatus[];
 }
 
-export function ExpeditionMap({ candidates }: ExpeditionMapProps) {
+export function ExpeditionMap({
+  candidates: initialCandidates,
+}: ExpeditionMapProps) {
   const router = useRouter();
   const [broadcasting, setBroadcasting] = useState(false);
+  const [candidates, setCandidates] =
+    useState<CandidateStatus[]>(initialCandidates);
+
+  useEffect(() => {
+    // Subscribe to Pusher
+    const channel = pusherClient.subscribe("expeditions");
+
+    channel.bind(
+      "player-moved",
+      (data: {
+        sessionId: string;
+        userName: string;
+        progress: number;
+        status: "active" | "distress" | "idle" | "complete";
+      }) => {
+        setCandidates((prev) => {
+          const index = prev.findIndex((c) => c.id === data.sessionId);
+          if (index === -1) {
+            // New candidate
+            return [
+              ...prev,
+              {
+                id: data.sessionId,
+                name: data.userName,
+                progress: data.progress,
+                status: data.status,
+                velocity: "steady",
+                lastActive: new Date().toISOString(),
+              },
+            ];
+          }
+          // Update existing
+          const updated = [...prev];
+          // Ensure status compatibility
+          updated[index] = {
+            ...updated[index],
+            progress: data.progress,
+            status: data.status,
+            lastActive: new Date().toISOString(),
+          };
+          return updated;
+        });
+      },
+    );
+
+    channel.bind("player-completed", (data: { sessionId: string }) => {
+      setCandidates((prev) => {
+        return prev.map((c) =>
+          c.id === data.sessionId
+            ? { ...c, status: "complete", progress: 100 }
+            : c,
+        );
+      });
+    });
+
+    return () => {
+      pusherClient.unsubscribe("expeditions");
+    };
+  }, []);
 
   const handleBroadcast = () => {
     setBroadcasting(true);
