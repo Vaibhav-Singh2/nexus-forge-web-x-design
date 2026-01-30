@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, CheckCircle2, Circle } from "lucide-react";
+import { ArrowRight, CheckCircle2, Circle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { submitAnswer } from "@/app/actions/journey";
 import { Question } from "@prisma/client";
@@ -27,6 +27,8 @@ export default function QuestionClient({
     isCorrect: boolean;
     correctOption: string | null;
   } | null>(null);
+  const [timeLeft, setTimeLeft] = useState(60); // 60 seconds per question
+  const [timerExpired, setTimerExpired] = useState(false);
 
   // Parse options if they are stringified JSON
   type Option = { id: string; text: string };
@@ -48,17 +50,19 @@ export default function QuestionClient({
   }
 
   const handleOptionSelect = (key: string) => {
-    if (isSubmitting || feedback) return;
+    if (isSubmitting || feedback || timerExpired) return;
     setSelectedOption(key);
   };
 
   const handleSubmit = async () => {
-    if (!selectedOption || isSubmitting || feedback) return;
+    if ((!selectedOption && !timerExpired) || isSubmitting || feedback) return;
 
     setIsSubmitting(true);
 
     try {
-      const result = await submitAnswer(sessionId, question.id, selectedOption);
+      // If timer expired but no answer selected, submit with empty answer
+      const answerToSubmit = selectedOption || "timeout";
+      const result = await submitAnswer(sessionId, question.id, answerToSubmit);
 
       // Show feedback
       setFeedback({
@@ -83,6 +87,26 @@ export default function QuestionClient({
     }
   };
 
+  // Timer countdown effect
+  useEffect(() => {
+    if (feedback || isSubmitting) return; // Stop timer if answered
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          setTimerExpired(true);
+          clearInterval(interval);
+          // Auto-submit when timer runs out
+          setTimeout(() => handleSubmit(), 100);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [feedback, isSubmitting]);
+
   return (
     <main className="min-h-screen bg-paper-mist flex flex-col pt-10 p-6 md:p-12 relative overflow-hidden justify-center">
       {/* Background Ambience */}
@@ -96,6 +120,25 @@ export default function QuestionClient({
             <span className="text-deep-shale/20">/</span>
             <span>{totalQuestions}</span>
           </div>
+
+          {/* Timer */}
+          <div
+            className={cn(
+              "flex items-center gap-2 px-3 py-1.5 rounded-full font-semibold text-sm transition-colors",
+              timeLeft > 20
+                ? "bg-green-50 text-green-700"
+                : timeLeft > 10
+                  ? "bg-yellow-50 text-yellow-700"
+                  : "bg-red-50 text-red-700 animate-pulse",
+            )}
+          >
+            <Clock className="w-4 h-4" />
+            <span>
+              {Math.floor(timeLeft / 60)}:
+              {String(timeLeft % 60).padStart(2, "0")}
+            </span>
+          </div>
+
           <div>Altitude: {1000 + currentStep * 500}ft</div>
         </header>
 
