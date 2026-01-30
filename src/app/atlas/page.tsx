@@ -51,24 +51,8 @@ export default async function AtlasPage() {
     prerequisiteId: string | null;
     minScoreToUnlock: number | null;
   }) => {
-    // No prerequisite = always unlocked
-    if (!journey.prerequisiteId) return true;
-
-    // Find if prerequisite journey was completed
-    const prerequisiteCompletion = completedSessions.find(
-      (s) => s.journeyId === journey.prerequisiteId && s.status === "COMPLETED",
-    );
-
-    if (!prerequisiteCompletion) return false;
-
-    // Check score requirement (percentage based)
-    const scorePercent =
-      prerequisiteCompletion.totalPoints > 0
-        ? (prerequisiteCompletion.score / prerequisiteCompletion.totalPoints) *
-          100
-        : 0;
-
-    return scorePercent >= (journey.minScoreToUnlock ?? 0);
+    // All journeys are always unlocked
+    return true;
   };
 
   return (
