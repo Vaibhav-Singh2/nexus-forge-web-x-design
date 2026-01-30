@@ -59,11 +59,7 @@ export async function GET() {
         select: {
           score: true,
           totalPoints: true,
-          journey: {
-            select: {
-              name: true,
-            },
-          },
+          journeyId: true,
         },
       }),
     ]);
@@ -88,6 +84,16 @@ export async function GET() {
         ? Math.round((completedSessions / totalSessions) * 100)
         : 0;
 
+    // Get journey names for analytics
+    const journeys = await db.journey.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    const journeyMap = new Map(journeys.map((j) => [j.id, j.name]));
+
     // Journey-wise statistics
     const journeyStats = allCompletedSessions.reduce(
       (
@@ -97,7 +103,7 @@ export async function GET() {
         >,
         session,
       ) => {
-        const journeyName = session.journey.name;
+        const journeyName = journeyMap.get(session.journeyId) || "Unknown";
         if (!acc[journeyName]) {
           acc[journeyName] = { count: 0, totalScore: 0, totalPoints: 0 };
         }

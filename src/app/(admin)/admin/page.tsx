@@ -56,44 +56,6 @@ export default async function AdminPage() {
       <main className="pt-24 px-6 h-screen flex flex-col">
         <div className="max-w-6xl mx-auto w-full">
           <AnalyticsPanel />
-          <div className="bg-white p-6 rounded-2xl border border-stone-gray/20 shadow-sm flex items-center justify-between">
-            <div>
-              <span className="block text-sm text-deep-shale/60 mb-1">
-                Total Travelers
-              </span>
-              <span className="text-3xl font-medium text-deep-shale">
-                {candidates.length}
-              </span>
-            </div>
-            <Users className="w-8 h-8 text-stone-gray/30" />
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-stone-gray/20 shadow-sm flex items-center justify-between">
-            <div>
-              <span className="block text-sm text-deep-shale/60 mb-1">
-                Avg. Ascent Velocity
-              </span>
-              <span className="text-3xl font-medium text-deep-shale">
-                Steady
-              </span>
-            </div>
-            <Activity className="w-8 h-8 text-sage-leaf" />
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-stone-gray/20 shadow-sm flex items-center justify-between relative overflow-hidden">
-            {candidates.some((c) => c.status === "distress") && (
-              <div className="absolute inset-x-0 bottom-0 h-1 bg-red-500 animate-pulse" />
-            )}
-            <div>
-              <span className="block text-sm text-deep-shale/60 mb-1">
-                Distress Signals
-              </span>
-              <span className="text-3xl font-medium text-deep-shale">
-                {candidates.filter((c) => c.status === "distress").length}
-              </span>
-            </div>
-            <AlertTriangle className="w-8 h-8 text-red-500" />
-          </div>
         </div>
 
         {/* 3. Central Map Visualization */}
