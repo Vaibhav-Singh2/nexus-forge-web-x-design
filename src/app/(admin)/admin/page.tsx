@@ -1,6 +1,6 @@
 import React from "react";
 import { ExpeditionMap } from "@/components/admin/ExpeditionMap";
-import { Activity, Users, AlertTriangle } from "lucide-react";
+import { AnalyticsPanel } from "@/components/admin/AnalyticsPanel";
 import { db } from "@/lib/db";
 import { CandidateStatus } from "@/components/admin/MomentumOrb";
 
@@ -43,15 +43,19 @@ export default async function AdminPage() {
         </div>
 
         <div className="flex items-center gap-6 text-sm text-deep-shale/60">
-          <span>Active Journeys: {candidates.length}</span>
+          <span>
+            Active Journeys:{" "}
+            {sessions.filter((s) => s.status === "IN_PROGRESS").length}
+          </span>
           <span>•</span>
           <span>Network: Stable</span>
         </div>
       </header>
 
-      {/* 2. Key Performance Indicators */}
+      {/* 2. Analytics Dashboard */}
       <main className="pt-24 px-6 h-screen flex flex-col">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 max-w-6xl mx-auto w-full">
+        <div className="max-w-6xl mx-auto w-full">
+          <AnalyticsPanel />
           <div className="bg-white p-6 rounded-2xl border border-stone-gray/20 shadow-sm flex items-center justify-between">
             <div>
               <span className="block text-sm text-deep-shale/60 mb-1">
