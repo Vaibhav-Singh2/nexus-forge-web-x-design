@@ -1,5 +1,4 @@
-import { Map, Compass, PlayCircle, MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Compass } from "lucide-react";
 import { getJourneys } from "@/lib/data";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
