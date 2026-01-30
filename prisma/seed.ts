@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -15,6 +16,12 @@ async function main() {
   const questionsData = JSON.parse(
     fs.readFileSync(
       path.join(process.cwd(), "src/data/questions.json"),
+      "utf-8",
+    ),
+  );
+  const answerKey: Record<string, string> = JSON.parse(
+    fs.readFileSync(
+      path.join(process.cwd(), "prisma/answer-key.json"),
       "utf-8",
     ),
   );
@@ -37,6 +44,8 @@ async function main() {
         difficulty: j.difficulty,
         duration: j.duration,
         totalQuestions: j.totalQuestions || 0,
+        prerequisiteId: j.prerequisiteId || null,
+        minScoreToUnlock: j.minScoreToUnlock || 0,
       },
     });
     console.log(`Created journey: ${journey.title}`);
@@ -55,7 +64,7 @@ async function main() {
           journeyId: q.journeyId,
           text: q.question,
           options: JSON.stringify(q.options), // Stringify for SQLite
-          correctOption: "a", // Defaulting to 'a' as correct for mock if not specified
+          correctOption: answerKey[q.id] || "a", // Use answer key
           explanation: "Explanation goes here.",
         },
       });
@@ -63,19 +72,23 @@ async function main() {
   }
 
   // 5. Seed Users
+  const studentPassword = await bcrypt.hash("student123", 10);
   await prisma.user.create({
     data: {
       email: "student@example.com",
       name: "Eco Traveler",
       role: "STUDENT",
+      password: studentPassword,
     },
   });
 
+  const adminPassword = await bcrypt.hash("admin123", 10);
   await prisma.user.create({
     data: {
       email: "admin@example.com",
       name: "Expedition Leader",
       role: "ADMIN",
+      password: adminPassword,
     },
   });
 

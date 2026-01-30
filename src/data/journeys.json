@@ -8,6 +8,8 @@
     "status": "available",
     "type": "Core Ascent",
     "totalQuestions": 15,
+    "prerequisiteId": null,
+    "minScoreToUnlock": 0,
     "stats": [
       { "label": "Est. Duration", "value": "20 Mins" },
       { "label": "Waypoints", "value": "15 Questions" },
@@ -25,9 +27,11 @@
     "description": "Identify hidden structures in a landscape of shapes and forms.",
     "difficulty": "Advanced",
     "duration": "60 Mins",
-    "status": "available",
+    "status": "locked",
     "type": "Technical Route",
     "totalQuestions": 20,
+    "prerequisiteId": "1",
+    "minScoreToUnlock": 70,
     "stats": [
       { "label": "Est. Duration", "value": "60 Mins" },
       { "label": "Waypoints", "value": "20 Questions" },
@@ -44,6 +48,8 @@
     "status": "locked",
     "type": "Summit Push",
     "totalQuestions": 25,
+    "prerequisiteId": "2",
+    "minScoreToUnlock": 80,
     "stats": [],
     "gearChecks": []
   }

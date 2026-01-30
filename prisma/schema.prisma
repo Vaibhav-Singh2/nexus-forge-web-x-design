@@ -13,6 +13,7 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    password      String?
     role          String    @default("STUDENT") // "STUDENT", "ADMIN"
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
@@ -22,15 +23,19 @@ model User {
 }
 
 model Journey {
-    id             String     @id @default(cuid())
-    title          String
-    description    String
-    difficulty     String
-    duration       String
-    totalQuestions Int
-    questions      Question[]
+    id               String  @id @default(cuid())
+    title            String
+    description      String
+    difficulty       String
+    duration         String
+    totalQuestions   Int
+    prerequisiteId   String?
+    minScoreToUnlock Int     @default(0)
 
-    sessions ExamSession[]
+    questions    Question[]
+    sessions     ExamSession[]
+    prerequisite Journey?      @relation("JourneyPrerequisite", fields: [prerequisiteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    nextJourneys Journey[]     @relation("JourneyPrerequisite")
 }
 
 model Question {
@@ -50,6 +55,8 @@ model ExamSession {
     journeyId   String
     status      String    @default("IN_PROGRESS") // "IN_PROGRESS", "COMPLETED", "ABANDONED", "DISTRESS"
     currentStep Int       @default(0)
+    score       Int       @default(0)
+    totalPoints Int       @default(0)
     startTime   DateTime  @default(now())
     endTime     DateTime?
 
@@ -59,12 +66,14 @@ model ExamSession {
 }
 
 model JourneyLog {
-    id        String   @id @default(cuid())
-    sessionId String
-    stepIndex Int
-    action    String // "START", "ANSWER_QUESTION", "ENTER_OVERLOOK", "RESUME_ASCENT", "SUMMIT_REACHED"
-    timestamp DateTime @default(now())
-    metadata  String? // Stored as JSON string
+    id           String   @id @default(cuid())
+    sessionId    String
+    stepIndex    Int
+    action       String // "START", "ANSWER_QUESTION", "ENTER_OVERLOOK", "RESUME_ASCENT", "SUMMIT_REACHED"
+    timestamp    DateTime @default(now())
+    metadata     String? // Stored as JSON string
+    isCorrect    Boolean?
+    pointsEarned Int      @default(0)
 
     session ExamSession @relation(fields: [sessionId], references: [id])
 }

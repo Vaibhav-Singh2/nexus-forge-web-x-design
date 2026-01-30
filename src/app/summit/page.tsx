@@ -27,6 +27,8 @@ export default async function SummitPage() {
     <SummitClient
       sessionId={examSession.id}
       totalQuestions={examSession.journey.totalQuestions || 30}
+      score={examSession.score}
+      totalPoints={examSession.totalPoints}
     />
   );
 }

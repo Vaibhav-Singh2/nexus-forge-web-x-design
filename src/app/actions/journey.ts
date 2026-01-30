@@ -82,14 +82,17 @@ export async function submitAnswer(
   });
 
   const isCorrect = question ? question.correctOption === answerId : false;
+  const pointsEarned = isCorrect ? 10 : 0;
 
-  // Update progress
+  // Update progress and score
   const nextStep = examSession.currentStep + 1;
 
   await db.examSession.update({
     where: { id: sessionId },
     data: {
       currentStep: nextStep,
+      score: { increment: pointsEarned },
+      totalPoints: { increment: 10 },
     },
   });
 
@@ -105,6 +108,8 @@ export async function submitAnswer(
         isCorrect,
         timestamp: new Date(),
       }),
+      isCorrect,
+      pointsEarned,
     },
   });
 

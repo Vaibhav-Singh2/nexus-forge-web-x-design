@@ -19,11 +19,25 @@ export default async function AtlasPage() {
 
   // Fetch active session if user is logged in
   let activeSession = null;
+  let completedSessions: any[] = [];
+
   if (session?.user?.email) {
     const user = await db.user.findUnique({
       where: { email: session.user.email },
+      include: {
+        sessions: {
+          where: {
+            status: "COMPLETED",
+          },
+          include: {
+            journey: true,
+          },
+        },
+      },
     });
+
     if (user) {
+      completedSessions = user.sessions;
       activeSession = await db.examSession.findFirst({
         where: {
           userId: user.id,
@@ -32,6 +46,28 @@ export default async function AtlasPage() {
       });
     }
   }
+
+  // Helper function to check if journey is unlocked
+  const isJourneyUnlocked = (journey: any) => {
+    // No prerequisite = always unlocked
+    if (!journey.prerequisiteId) return true;
+
+    // Find if prerequisite journey was completed
+    const prerequisiteCompletion = completedSessions.find(
+      (s) => s.journeyId === journey.prerequisiteId && s.status === "COMPLETED",
+    );
+
+    if (!prerequisiteCompletion) return false;
+
+    // Check score requirement (percentage based)
+    const scorePercent =
+      prerequisiteCompletion.totalPoints > 0
+        ? (prerequisiteCompletion.score / prerequisiteCompletion.totalPoints) *
+          100
+        : 0;
+
+    return scorePercent >= journey.minScoreToUnlock;
+  };
 
   return (
     <main className="min-h-screen bg-paper-mist p-6 md:p-12 animate-hero-reveal">
@@ -62,8 +98,7 @@ export default async function AtlasPage() {
       {/* 2. Journey Grid */}
       <section className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         {journeys.map((journey) => {
-          // TODO: Implement unlocking logic based on user progress
-          const isLocked = false;
+          const isLocked = !isJourneyUnlocked(journey);
           const type = "Expedition"; // Default type
 
           const isActive = activeSession?.journeyId === journey.id;
@@ -79,6 +114,14 @@ export default async function AtlasPage() {
             href = `/exam/${activeSession.currentStep}`;
           }
 
+          // Find prerequisite journey for displaying unlock message
+          const prerequisiteJourney = journeys.find(
+            (j) => j.id === journey.prerequisiteId,
+          );
+          const unlockMessage = prerequisiteJourney
+            ? `Complete "${prerequisiteJourney.title}" with ${journey.minScoreToUnlock}%+ to unlock`
+            : null;
+
           return (
             <Link
               key={journey.id}
@@ -92,6 +135,9 @@ export default async function AtlasPage() {
                     : "bg-white border-stone-gray/20 hover:border-horizon-blue hover:shadow-lg hover:-translate-y-1",
               )}
               aria-disabled={isLocked}
+              onClick={(e) => {
+                if (isLocked) e.preventDefault();
+              }}
             >
               {/* Background Decor */}
               <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -129,6 +175,12 @@ export default async function AtlasPage() {
                   <p className="text-sm text-deep-shale/70 leading-relaxed">
                     {journey.description}
                   </p>
+                  {isLocked && unlockMessage && (
+                    <p className="text-xs text-deep-shale/50 italic mt-2 flex items-center gap-1">
+                      <Lock className="w-3 h-3" />
+                      {unlockMessage}
+                    </p>
+                  )}
                 </div>
               </div>
 

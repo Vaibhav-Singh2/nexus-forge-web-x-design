@@ -1,19 +1,20 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { db } from "@/lib/db";
+import bcrypt from "bcryptjs";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }, // Optional for this MVP
-        role: { label: "Role", type: "text" }, // We might pass role from login form or infer it
+        password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
         const email = credentials.email as string;
+        const password = credentials.password as string;
 
-        if (!email) {
+        if (!email || !password) {
           return null;
         }
 
@@ -21,13 +22,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           where: { email },
         });
 
-        if (!user) {
-          // For MVP, if user doesn't exist, we could auto-create or fail?
-          // Let's fail for now as we seeded users.
-          // Or auto-create to be friendly?
-          // Let's stick to seeded users for strict testing.
-          // Actually, let's allow "Guest" access creation or just fail.
-          // Failing is safer for "Admin" testing.
+        if (!user || !user.password) {
+          return null;
+        }
+
+        // Verify password
+        const isValidPassword = await bcrypt.compare(password, user.password);
+
+        if (!isValidPassword) {
           return null;
         }
 
@@ -35,7 +37,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role, // We need to expose role in session
+          role: user.role,
         };
       },
     }),

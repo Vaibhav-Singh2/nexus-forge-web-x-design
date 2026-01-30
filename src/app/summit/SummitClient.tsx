@@ -3,18 +3,21 @@
 import { useRouter } from "next/navigation";
 import { SummitMap } from "@/components/journey/SummitMap";
 import { SignOffSeal } from "@/components/journey/SignOffSeal";
-import { Trophy, Clock, Footprints } from "lucide-react";
+import { Trophy, Footprints } from "lucide-react";
 import { signSummit } from "@/app/actions/journey";
 
 type SummitClientProps = {
   sessionId: string;
   totalQuestions: number;
-  // Add other stats if needed
+  score: number;
+  totalPoints: number;
 };
 
 export default function SummitClient({
   sessionId,
   totalQuestions,
+  score,
+  totalPoints,
 }: SummitClientProps) {
   const router = useRouter();
 
@@ -48,7 +51,7 @@ export default function SummitClient({
         {/* The Map Recap */}
         <SummitMap />
 
-        {/* Stats Cards (No Raw Tables) */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-gray/10 flex flex-col items-center">
             <Footprints className="w-6 h-6 text-horizon-blue mb-2" />
@@ -58,14 +61,24 @@ export default function SummitClient({
             </span>
           </div>
           <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-gray/10 flex flex-col items-center">
-            <Clock className="w-6 h-6 text-horizon-blue mb-2" />
-            <span className="text-sm text-deep-shale/60">Duration</span>
-            <span className="text-lg font-medium">42 Minutes</span>
+            <Trophy className="w-6 h-6 text-sage-leaf mb-2" />
+            <span className="text-sm text-deep-shale/60">Score</span>
+            <span className="text-lg font-medium">
+              {score}/{totalPoints}
+            </span>
           </div>
           <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-gray/10 flex flex-col items-center">
             <Trophy className="w-6 h-6 text-sage-leaf mb-2" />
             <span className="text-sm text-deep-shale/60">Performance</span>
-            <span className="text-lg font-medium">Strong Grade</span>
+            <span className="text-lg font-medium">
+              {totalPoints > 0
+                ? Math.round((score / totalPoints) * 100) >= 80
+                  ? "Excellent"
+                  : Math.round((score / totalPoints) * 100) >= 60
+                    ? "Good"
+                    : "Fair"
+                : "N/A"}
+            </span>
           </div>
         </div>
       </div>

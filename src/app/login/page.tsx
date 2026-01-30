@@ -1,41 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Compass, User, Key, Shield, ArrowRight, Loader2 } from "lucide-react";
+import { Key, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { loginAction } from "@/app/actions/auth";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [loadingRole, setLoadingRole] = useState<"student" | "admin" | null>(
-    null,
-  );
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleLogin = async (role: "student" | "admin") => {
-    setLoadingRole(role);
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
     setErrorMessage(null);
 
     try {
-      const result = await loginAction(role);
-      if (
-        result &&
-        typeof result === "object" &&
-        "success" in result &&
-        result.success
-      ) {
-        router.push(result.url || "/");
-      } else if (result && typeof result === "object" && "error" in result) {
-        setErrorMessage((result.error as string) || "Unknown error");
-        setLoadingRole(null);
-      } else {
-        setLoadingRole(null);
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setErrorMessage("Invalid email or password");
+        setLoading(false);
+      } else if (result?.ok) {
+        router.push("/atlas");
+        router.refresh();
       }
     } catch (error) {
       console.error("Login failed", error);
       setErrorMessage("Authentication failed. Please try again.");
-      setLoadingRole(null);
+      setLoading(false);
     }
   };
 
@@ -48,90 +49,115 @@ export default function LoginPage() {
             <Key className="w-6 h-6" />
           </div>
           <h1 className="text-2xl font-serif text-deep-shale">
-            Checkpoint Access
+            Access the Journey
           </h1>
-          <p className="text-sm text-deep-shale/60 leading-relaxed">
-            Identify your role to proceed to the secure area.
+          <p className="text-sm text-deep-shale/60">
+            Enter your credentials to begin your ascent
           </p>
+        </div>
+
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Email Input */}
+          <div className="space-y-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-deep-shale"
+            >
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="student@example.com"
+              required
+              className="w-full px-4 py-2.5 border border-stone-gray/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-horizon-blue/50 focus:border-horizon-blue transition-colors"
+            />
+          </div>
+
+          {/* Password Input */}
+          <div className="space-y-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-deep-shale"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+                className="w-full px-4 py-2.5 pr-10 border border-stone-gray/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-horizon-blue/50 focus:border-horizon-blue transition-colors"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-deep-shale/40 hover:text-deep-shale transition-colors"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Error Message */}
           {errorMessage && (
-            <div className="text-red-500 text-xs bg-red-50 p-2 rounded">
-              {errorMessage}
+            <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{errorMessage}</span>
             </div>
           )}
-        </div>
 
-        {/* Role Selection */}
-        <div className="space-y-4">
-          {/* Student Button */}
+          {/* Submit Button */}
           <button
-            onClick={() => handleLogin("student")}
-            disabled={loadingRole !== null}
+            type="submit"
+            disabled={loading}
             className={cn(
-              "w-full group relative flex items-center p-4 rounded-xl border transition-all duration-300 text-left",
-              loadingRole === "student"
-                ? "bg-stone-gray/5 border-stone-gray/20"
-                : "bg-white border-stone-gray/20 hover:border-horizon-blue hover:shadow-md",
+              "w-full py-3 bg-horizon-blue text-white font-medium rounded-lg transition-all duration-300",
+              loading
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-deep-shale hover:shadow-lg",
             )}
           >
-            <div className="w-10 h-10 rounded-full bg-stone-gray/10 flex items-center justify-center text-deep-shale/60 group-hover:bg-horizon-blue/10 group-hover:text-horizon-blue transition-colors mr-4">
-              <User className="w-5 h-5" />
-            </div>
-            <div className="flex-1">
-              <div className="font-medium text-deep-shale">Candidate</div>
-              <div className="text-xs text-deep-shale/50">
-                Access The Atlas & Journey
-              </div>
-            </div>
-            <div className="text-horizon-blue opacity-0 group-hover:opacity-100 transition-opacity">
-              {loadingRole === "student" ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <ArrowRight className="w-5 h-5" />
-              )}
-            </div>
-          </button>
-
-          {/* Admin Button */}
-          <button
-            onClick={() => handleLogin("admin")}
-            disabled={loadingRole !== null}
-            className={cn(
-              "w-full group relative flex items-center p-4 rounded-xl border transition-all duration-300 text-left",
-              loadingRole === "admin"
-                ? "bg-stone-gray/5 border-stone-gray/20"
-                : "bg-white border-stone-gray/20 hover:border-deep-shale hover:shadow-md",
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Authenticating...
+              </span>
+            ) : (
+              "Sign In"
             )}
-          >
-            <div className="w-10 h-10 rounded-full bg-stone-gray/10 flex items-center justify-center text-deep-shale/60 group-hover:bg-deep-shale/10 group-hover:text-deep-shale transition-colors mr-4">
-              <Shield className="w-5 h-5" />
-            </div>
-            <div className="flex-1">
-              <div className="font-medium text-deep-shale">
-                Expedition Leader
-              </div>
-              <div className="text-xs text-deep-shale/50">
-                Access Command Center
-              </div>
-            </div>
-            <div className="text-deep-shale opacity-0 group-hover:opacity-100 transition-opacity">
-              {loadingRole === "admin" ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <ArrowRight className="w-5 h-5" />
-              )}
-            </div>
           </button>
-        </div>
+        </form>
 
-        {/* Disclaimer */}
-        <div className="pt-6 border-t border-stone-gray/10 text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-gray/5 text-[10px] font-medium text-deep-shale/40 uppercase tracking-widest">
-            <Compass className="w-3 h-3" />
-            Mock Authentication
-          </div>
-          <p className="text-xs text-deep-shale/30 italic">
-            No password required for prototype access.
+        {/* Test Credentials Helper */}
+        <div className="pt-6 border-t border-stone-gray/10 space-y-3">
+          <p className="text-xs text-deep-shale/50 text-center font-medium">
+            Test Credentials
           </p>
+          <div className="space-y-2 text-xs text-deep-shale/60">
+            <div className="flex items-center justify-between p-2 bg-stone-gray/5 rounded">
+              <span>Student: student@example.com</span>
+              <code className="text-[10px] bg-white px-2 py-0.5 rounded">
+                student123
+              </code>
+            </div>
+            <div className="flex items-center justify-between p-2 bg-stone-gray/5 rounded">
+              <span>Admin: admin@example.com</span>
+              <code className="text-[10px] bg-white px-2 py-0.5 rounded">
+                admin123
+              </code>
+            </div>
+          </div>
         </div>
       </div>
     </main>
