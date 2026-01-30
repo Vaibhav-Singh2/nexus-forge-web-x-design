@@ -88,11 +88,11 @@ export async function GET() {
     const journeys = await db.journey.findMany({
       select: {
         id: true,
-        name: true,
+        title: true,
       },
     });
 
-    const journeyMap = new Map(journeys.map((j) => [j.id, j.name]));
+    const journeyMap = new Map(journeys.map((j) => [j.id, j.title]));
 
     // Journey-wise statistics
     const journeyStats = allCompletedSessions.reduce(
